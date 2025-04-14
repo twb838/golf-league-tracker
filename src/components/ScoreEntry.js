@@ -103,66 +103,62 @@ function ScoreEntry() {
 
     return (
         <div className="score-entry-page">
-            <h2>Enter Scores - {match?.league?.name}</h2>
-            
-            <div className="match-info">
-                <div className="team-names">
-                    <span className="team1-name">{match?.team1?.name}</span>
-                    <span className="vs">vs</span>
-                    <span className="team2-name">{match?.team2?.name}</span>
+            <header className="match-header">
+                <h2>{match?.league?.name}</h2>
+                <div className="match-info">
+                    <div className="team-names">
+                        <span className="team1-name">{match?.team1?.name}</span>
+                        <span className="vs">vs</span>
+                        <span className="team2-name">{match?.team2?.name}</span>
+                    </div>
+                    <p className="match-date">{new Date(match?.date).toLocaleDateString()}</p>
                 </div>
-                <p className="match-date">Date: {new Date(match?.date).toLocaleDateString()}</p>
-            </div>
+            </header>
 
             <form onSubmit={handleSubmit} className="score-entry-form">
-                <div className="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th className="player-name-header">Player</th>
-                                {course?.holes.map((hole, index) => (
-                                    <th key={index + 1}>
-                                        {index + 1}
-                                        <div className="par">Par {hole.par}</div>
-                                    </th>
+                {/* Team 1 Section */}
+                <section className="team-section">
+                    <h3 className="team-header">{match?.team1?.name}</h3>
+                    {team1Players.map(player => (
+                        <div key={player.id} className="player-card">
+                            <h4 className="player-name">
+                                {player.first_name} {player.last_name}
+                            </h4>
+                            <div className="holes-grid">
+                                {scores[player.id]?.map((score, holeIndex) => (
+                                    <div key={holeIndex} className="hole-input">
+                                        <label>{holeIndex + 1}</label>
+                                        <div className="score-input">
+                                            <small>Par {course?.holes[holeIndex].par}</small>
+                                            <input
+                                                type="number"
+                                                min="1"
+                                                max="15"
+                                                value={score}
+                                                onChange={(e) => handleScoreChange(player.id, holeIndex, e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
                                 ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {/* Team 1 Section */}
-                            <tr className="team-header">
-                                <td colSpan={course?.holes.length + 1}>{match?.team1?.name}</td>
-                            </tr>
-                            {team1Players.map(player => (
-                                <tr key={player.id} className="team1-row">
-                                    <td className="player-name">
-                                        {player.first_name} {player.last_name}
-                                    </td>
-                                    {scores[player.id]?.map((score, holeIndex) => (
-                                        <td key={holeIndex}>
-                                            <input
-                                                type="number"
-                                                min="1"
-                                                max="15"
-                                                value={score}
-                                                onChange={(e) => handleScoreChange(player.id, holeIndex, e.target.value)}
-                                            />
-                                        </td>
-                                    ))}
-                                </tr>
-                            ))}
+                            </div>
+                        </div>
+                    ))}
+                </section>
 
-                            {/* Team 2 Section */}
-                            <tr className="team-header">
-                                <td colSpan={course?.holes.length + 1}>{match?.team2?.name}</td>
-                            </tr>
-                            {team2Players.map(player => (
-                                <tr key={player.id} className="team2-row">
-                                    <td className="player-name">
-                                        {player.first_name} {player.last_name}
-                                    </td>
-                                    {scores[player.id]?.map((score, holeIndex) => (
-                                        <td key={holeIndex}>
+                {/* Team 2 Section */}
+                <section className="team-section">
+                    <h3 className="team-header">{match?.team2?.name}</h3>
+                    {team2Players.map(player => (
+                        <div key={player.id} className="player-card">
+                            <h4 className="player-name">
+                                {player.first_name} {player.last_name}
+                            </h4>
+                            <div className="holes-grid">
+                                {scores[player.id]?.map((score, holeIndex) => (
+                                    <div key={holeIndex} className="hole-input">
+                                        <label>{holeIndex + 1}</label>
+                                        <div className="score-input">
+                                            <small>Par {course?.holes[holeIndex].par}</small>
                                             <input
                                                 type="number"
                                                 min="1"
@@ -170,13 +166,14 @@ function ScoreEntry() {
                                                 value={score}
                                                 onChange={(e) => handleScoreChange(player.id, holeIndex, e.target.value)}
                                             />
-                                        </td>
-                                    ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </section>
+
                 <div className="form-actions">
                     <button type="submit" disabled={loading}>Submit Scores</button>
                 </div>

@@ -4,7 +4,7 @@ import './Teams.css';
 
 function Teams() {
     const [teams, setTeams] = useState([]);
-
+    const [showCreateForm, setShowCreateForm] = useState(false);
     const [newTeam, setNewTeam] = useState({
         name: '',
         players: [{
@@ -12,7 +12,6 @@ function Teams() {
             last_name: ''
         }]
     });
-
     const [selectedTeam, setSelectedTeam] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
     const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -161,6 +160,16 @@ function Teams() {
 
     return (
         <div className="teams-container">
+            <div className="teams-header">
+                <h2>Current Teams</h2>
+                <button 
+                    onClick={() => setShowCreateForm(!showCreateForm)}
+                    className="toggle-form-button"
+                >
+                    {showCreateForm ? 'Hide Form' : 'Create New Team'}
+                </button>
+            </div>
+
             {error && <div className="error-message">{error}</div>}
             {loading && <div className="loading">Loading...</div>}
             {showSuccessModal && (
@@ -185,74 +194,18 @@ function Teams() {
                     </div>
                 </div>
             )}
-            <form onSubmit={handleSubmit} className="team-form">
-                <div className="form-group">
-                    <label>Team Name:</label>
-                    <input
-                        type="text"
-                        name="name"
-                        value={newTeam.name}
-                        onChange={(e) => setNewTeam(prev => ({ ...prev, name: e.target.value }))}
-                        maxLength={50}
-                        required
-                    />
-                </div>
-                
-                {newTeam.players.map((player, index) => (
-                    <div key={index} className="form-group player-group">
-                        <div className="player-header">
-                            <label>Player {index + 1}:</label>
-                            {newTeam.players.length > 1 && (
-                                <button 
-                                    type="button" 
-                                    onClick={() => removePlayer(index)}
-                                    className="remove-player-btn"
-                                >
-                                    Remove
-                                </button>
-                            )}
-                        </div>
-                        <div className="player-inputs">
-                            <input
-                                type="text"
-                                placeholder="First Name"
-                                value={player.first_name}
-                                onChange={(e) => handlePlayerChange(index, 'first_name', e.target.value)}
-                                maxLength={50}
-                                required
-                            />
-                            <input
-                                type="text"
-                                placeholder="Last Name"
-                                value={player.last_name}
-                                onChange={(e) => handlePlayerChange(index, 'last_name', e.target.value)}
-                                maxLength={50}
-                                required
-                            />
-                        </div>
-                    </div>
-                ))}
-                
-                {newTeam.players.length < 4 && (
-                    <button 
-                        type="button" 
-                        onClick={addPlayer}
-                        className="add-player-btn"
-                    >
-                        Add Player
-                    </button>
-                )}
-                
-                <button type="submit">Add Team</button>
-            </form>
             <div className="teams-list">
-                <h3>Current Teams</h3>
-                {teams.length > 0 ? (
+                {loading ? (
+                    <div className="loading">Loading...</div>
+                ) : teams.length > 0 ? (
                     <ul>
                         {teams.map((team, index) => (
                             <li key={team.id} className="team-item">
                                 <span className="team-number">{index + 1}.</span>
-                                <span className="team-name">{team.name}</span>
+                                <div className="team-info">
+                                    <h4>{team.name}</h4>
+                                    <p>Players: {team.players?.length || 0}</p>
+                                </div>
                                 <div className="button-group">
                                     <button 
                                         onClick={() => viewTeamDetails(team)} 
@@ -271,9 +224,68 @@ function Teams() {
                         ))}
                     </ul>
                 ) : (
-                    <p>No teams available. Add a new team to get started!</p>
+                    <p>No teams available. Create a new team to get started!</p>
                 )}
             </div>
+
+            {showCreateForm && (
+                <div className="create-team-section">
+                    <h3>Create New Team</h3>
+                    <form onSubmit={handleSubmit} className="team-form">
+                        <div className="form-group">
+                            <label>Team Name:</label>
+                            <input
+                                type="text"
+                                value={newTeam.name}
+                                onChange={(e) => handleInputChange(e)}
+                                required
+                            />
+                        </div>
+
+                        <div className="players-section">
+                            <h4>Players</h4>
+                            {newTeam.players.map((player, index) => (
+                                <div key={index} className="player-inputs">
+                                    <input
+                                        type="text"
+                                        placeholder="First Name"
+                                        value={player.first_name}
+                                        onChange={(e) => handlePlayerChange(index, 'first_name', e.target.value)}
+                                        required
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="Last Name"
+                                        value={player.last_name}
+                                        onChange={(e) => handlePlayerChange(index, 'last_name', e.target.value)}
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => removePlayer(index)}
+                                        className="remove-player-button"
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                            ))}
+                            <button
+                                type="button"
+                                onClick={addPlayer}
+                                className="add-player-button"
+                            >
+                                Add Player
+                            </button>
+                        </div>
+
+                        <div className="form-actions">
+                            <button type="submit" disabled={loading}>
+                                Create Team
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            )}
             <button onClick={cleanupUnassignedPlayers} className="cleanup-btn">
                 Cleanup Unassigned Players
             </button>

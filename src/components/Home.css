@@ -1,0 +1,20 @@
+.home {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.home-content {
+  margin-top: 2rem;
+}
+
+.features ul {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+.features li {
+  padding: 0.5rem 0;
+  font-size: 1.1rem;
+}

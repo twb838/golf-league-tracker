@@ -1,0 +1,121 @@
+.score-entry-page {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.match-info {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.score-entry-form table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.score-entry-form th,
+.score-entry-form td {
+    border: 1px solid #dee2e6;
+    padding: 8px;
+    text-align: center;
+}
+
+.score-entry-form th {
+    background-color: #f8f9fa;
+    font-weight: 500;
+}
+
+.score-entry-form th .par {
+    font-size: 0.8em;
+    color: #6c757d;
+}
+
+.score-entry-form input {
+    width: 40px;
+    padding: 4px;
+    text-align: center;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+.team1-row {
+    background-color: #f8f9fa;
+}
+
+.team2-row {
+    background-color: #fff;
+}
+
+button[type="submit"] {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right;
+}
+
+button[type="submit"]:hover:not(:disabled) {
+    background-color: #218838;
+}
+
+button[type="submit"]:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+.table-container {
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+.team-header td {
+    background-color: #e9ecef;
+    font-weight: 500;
+    text-align: left;
+    padding: 12px 8px;
+}
+
+.player-name-header {
+    min-width: 150px;
+    text-align: left !important;
+}
+
+.player-name {
+    text-align: left !important;
+    white-space: nowrap;
+}
+
+.team-names {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.team1-name, .team2-name {
+    font-weight: 500;
+    font-size: 1.1em;
+}
+
+.vs {
+    color: #6c757d;
+}
+
+.match-date {
+    text-align: center;
+    margin: 0;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}

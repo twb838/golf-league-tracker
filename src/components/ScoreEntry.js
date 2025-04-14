@@ -25,10 +25,12 @@ function ScoreEntry() {
             const matchData = await matchService.getMatch(matchId);
             console.log('Match data received:', matchData);
             
+            // Check for course_id in the league data
             if (!matchData.league?.course_id) {
-                throw new Error('No course found for this match');
+                throw new Error('No course ID found for this match');
             }
             
+            // Fetch course using the ID
             const courseData = await matchService.getCourse(matchData.league.course_id);
             console.log('Course data received:', courseData);
 

@@ -132,7 +132,7 @@ export const matchService = {
             }
 
             const data = await response.json();
-            console.log('Course data:', data);
+            console.log('Course data received:', data);
             return data;
         } catch (err) {
             console.error('Error in getCourse:', err);

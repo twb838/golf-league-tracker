@@ -28,19 +28,21 @@ export const matchService = {
      * @param {PlayerScore[]} scores - Array of player scores
      * @returns {Promise<MatchResult>} The match results
      */
-    async submitScores(matchId, scores) {
+    async submitScores(matchId, scoreData) {
         try {
             const response = await fetch(`${API_BASE_URL}/matches/${matchId}/scores`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(scores)
+                body: JSON.stringify(scoreData)
             });
+
             if (!response.ok) {
                 const error = await response.json();
                 throw new Error(error.detail || 'Failed to submit scores');
             }
+
             return response.json();
         } catch (err) {
             console.error('Error submitting scores:', err);

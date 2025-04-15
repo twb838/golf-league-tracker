@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { matchService } from '../services/matchService';
 import './ScoreEntry.css';
 
 function ScoreEntry() {
     const { matchId } = useParams();
+    const navigate = useNavigate();
     const [match, setMatch] = useState(null);
     const [course, setCourse] = useState(null);
     const [team1Players, setTeam1Players] = useState([]);
@@ -77,20 +78,22 @@ function ScoreEntry() {
         e.preventDefault();
         try {
             setLoading(true);
+            // Format scores as an array of player scores with hole IDs
             const formattedScores = Object.entries(scores).map(([playerId, holeScores]) => ({
                 player_id: parseInt(playerId),
-                team_id: team1Players.find(p => p.id === parseInt(playerId)) 
-                    ? match.team1_id 
-                    : match.team2_id,
-                hole_scores: holeScores.map((strokes, index) => ({
-                    hole_number: index + 1,
+                scores: holeScores.map((strokes, index) => ({
+                    hole_id: course.holes[index].id,
                     strokes: parseInt(strokes) || 0
-                }))
+                })).filter(score => score.strokes > 0) // Only include holes with scores
             }));
 
+            // Submit scores directly as an array
             await matchService.submitScores(matchId, formattedScores);
-            // Redirect to match results or league details
+
+            // Show success message or redirect
+            navigate(`/leagues/${match.league.id}`);
         } catch (err) {
+            console.error('Error submitting scores:', err);
             setError('Failed to submit scores');
         } finally {
             setLoading(false);

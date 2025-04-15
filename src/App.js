@@ -6,6 +6,7 @@ import Courses from './components/Courses';
 import Leagues from './components/Leagues';
 import LeagueDetails from './components/LeagueDetails';
 import ScoreEntry from './components/ScoreEntry';
+import MatchGenerator from './components/MatchGenerator';
 import './App.css';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
           <Route path="/leagues" element={<Leagues />} />
           <Route path="/leagues/:id" element={<LeagueDetails />} />
           <Route path="/matches/:matchId/scores" element={<ScoreEntry />} />
+          <Route path="/leagues/:id/generate-matches" element={<MatchGenerator />} />
         </Routes>
       </div>
     </Router>

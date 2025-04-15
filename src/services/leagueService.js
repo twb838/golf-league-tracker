@@ -79,5 +79,60 @@ export const leagueService = {
         });
         if (!response.ok) throw new Error('Failed to update league');
         return response.json();
+    },
+
+    /**
+     * Creates multiple matches for a league
+     * @param {number} leagueId - The ID of the league
+     * @param {Array<Object>} matches - Array of match objects to create
+     * @returns {Promise<Array>} The created matches
+     */
+    async createMatches(leagueId, matches) {
+        try {
+            console.log('Creating matches:', { leagueId, matches });
+            
+            const response = await fetch(`${API_BASE_URL}/leagues/${leagueId}/matches/batch`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ matches })
+            });
+
+            const responseData = await response.json();
+            console.log('Server response:', responseData);
+
+            if (!response.ok) {
+                throw new Error(responseData.detail || `HTTP error! status: ${response.status}`);
+            }
+
+            return responseData;
+        } catch (err) {
+            console.error('Error creating matches:', {
+                error: err.message,
+                leagueId,
+                matchCount: matches?.length
+            });
+            throw new Error(`Failed to create matches: ${err.message}`);
+        }
+    },
+
+    async getLeagueMatches(leagueId) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/leagues/${leagueId}/matches`);
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Failed to fetch league matches');
+            }
+
+            const matches = await response.json();
+            console.log('League matches:', matches);
+            return matches;
+        } catch (err) {
+            console.error('Error fetching league matches:', err);
+            throw err;
+        }
     }
 };

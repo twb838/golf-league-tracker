@@ -138,5 +138,74 @@ export const matchService = {
             console.error('Error in getCourse:', err);
             throw err;
         }
+    },
+
+    async deleteMatch(matchId) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/matches/${matchId}`, {
+                method: 'DELETE'
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Failed to delete match');
+            }
+
+            return true;
+        } catch (err) {
+            console.error('Error deleting match:', err);
+            throw err;
+        }
+    },
+
+    /**
+     * Gets matches for a specific week
+     * @param {number} leagueId - The ID of the league
+     * @param {number} weekNumber - The week number to fetch
+     * @returns {Promise<Match[]>} Array of matches for the week
+     */
+    async getMatchesByWeek(leagueId, weekNumber) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/leagues/${leagueId}/matches/week/${weekNumber}`);
+            
+            if (response.status === 404) {
+                return []; // Return empty array if no matches found
+            }
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Failed to fetch week matches');
+            }
+
+            const data = await response.json();
+            console.log(`Week ${weekNumber} matches:`, data);
+            return data;
+        } catch (err) {
+            console.error('Error fetching week matches:', err);
+            throw err;
+        }
+    },
+
+    /**
+     * Gets available weeks for a league
+     * @param {number} leagueId - The ID of the league
+     * @returns {Promise<number[]>} Array of week numbers
+     */
+    async getAvailableWeeks(leagueId) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/leagues/${leagueId}/weeks`);
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Failed to fetch available weeks');
+            }
+
+            const data = await response.json();
+            console.log('Available weeks:', data.sort((a, b) => a - b));
+            return data.sort((a, b) => a - b);
+        } catch (err) {
+            console.error('Error fetching available weeks:', err);
+            throw err;
+        }
     }
 };

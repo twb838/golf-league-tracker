@@ -21,38 +21,36 @@ function ScoreEntry() {
     const fetchMatchDetails = async () => {
         try {
             setLoading(true);
-            console.log('Fetching match details for ID:', matchId);
             
             const matchData = await matchService.getMatch(matchId);
-            console.log('Match data received:', matchData);
-            
-            // Check for course_id in the league data
-            if (!matchData.league?.course_id) {
-                throw new Error('No course ID found for this match');
-            }
-            
-            // Fetch course using the ID
             const courseData = await matchService.getCourse(matchData.league.course_id);
-            console.log('Course data received:', courseData);
-
-            if (!matchData.team1?.players || !matchData.team2?.players) {
-                throw new Error('Team or player data missing');
-            }
+            const existingScores = await matchService.getMatchScores(matchId);
 
             setMatch(matchData);
             setCourse(courseData);
-            setTeam1Players(matchData.team1.players.sort((a, b) => 
-                (a.first_name + a.last_name).localeCompare(b.first_name + b.last_name)
-            ));
-            setTeam2Players(matchData.team2.players.sort((a, b) => 
-                (a.first_name + a.last_name).localeCompare(b.first_name + b.last_name)
-            ));
+            setTeam1Players(matchData.team1.players);
+            setTeam2Players(matchData.team2.players);
 
             // Initialize scores structure
             const initialScores = {};
             [...matchData.team1.players, ...matchData.team2.players].forEach(player => {
+                // Create array of empty strings for all holes
                 initialScores[player.id] = Array(courseData.holes.length).fill('');
+                
+                // Check if existingScores is an array before using find
+                if (Array.isArray(existingScores)) {
+                    const playerScores = existingScores.find(s => s.player_id === player.id);
+                    if (playerScores?.scores) {
+                        playerScores.scores.forEach(score => {
+                            const holeIndex = courseData.holes.findIndex(h => h.id === score.hole_id);
+                            if (holeIndex !== -1) {
+                                initialScores[player.id][holeIndex] = score.strokes;
+                            }
+                        });
+                    }
+                }
             });
+            
             setScores(initialScores);
         } catch (err) {
             console.error('Error in fetchMatchDetails:', err);
@@ -107,7 +105,15 @@ function ScoreEntry() {
     return (
         <div className="score-entry-page">
             <header className="match-header">
-                <h2>{match?.league?.name}</h2>
+                <div className="header-navigation">
+                    <button 
+                        onClick={() => navigate(`/leagues/${match.league.id}`)}
+                        className="back-button"
+                    >
+                        ← Back to League
+                    </button>
+                    <h2>{match?.league?.name}</h2>
+                </div>
                 <div className="match-info">
                     <div className="team-names">
                         <span className="team1-name">{match?.team1?.name}</span>

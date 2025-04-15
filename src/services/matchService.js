@@ -209,5 +209,26 @@ export const matchService = {
             console.error('Error fetching available weeks:', err);
             throw err;
         }
+    },
+
+    /**
+     * Gets the existing scores for a match
+     * @param {number} matchId - The ID of the match
+     * @returns {Promise<Array>} The match scores
+     */
+    async getMatchScores(matchId) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/matches/${matchId}/scores`);
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.detail || 'Failed to fetch match scores');
+            }
+
+            return response.json();
+        } catch (err) {
+            console.error('Error fetching match scores:', err);
+            throw err;
+        }
     }
 };

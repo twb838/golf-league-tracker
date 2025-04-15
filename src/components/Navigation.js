@@ -36,7 +36,7 @@ function Navigation() {
                     <Link to="/teams" onClick={toggleMenu}>Teams</Link>
                 </li>
                 <li>
-                    <Link to="/players" onClick={toggleMenu}>Players</Link>
+                    <Link to="/courses" onClick={toggleMenu}>Courses</Link>
                 </li>
             </ul>
         </nav>
